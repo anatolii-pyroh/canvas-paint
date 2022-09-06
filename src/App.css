@@ -18,7 +18,7 @@ body {
 h1 {
   font-family: "Lobster", cursive;
   font-size: 50px;
-  color: #4644f0;
+  color: #0075FF;
   margin: 1rem;
 }
 
@@ -30,14 +30,7 @@ h1 {
   background-color: white;
 }
 
-.Menu {
-  width: 70%;
-  height: 50px;
-  display: flex;
-  justify-content: space-evenly;
-  border-radius: 5px;
-  align-items: center;
-  background-color: #a3a3a32d;
-  margin: auto;
-  margin-top: 10px;
+canvas {
+    transition: opacity 1s;
+    will-change: opacity;
 }

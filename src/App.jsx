@@ -1,15 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import Menu from "./components/Menu";
 import "./App.css";
+import Menu from "./components/Menu/Menu";
 
 function App() {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
+
   const [isDrawing, setIsDrawing] = useState(false);
-  const [lineWidth, setLineWidth] = useState(5);
+  const [lineWidth, setLineWidth] = useState(15);
   const [lineColor, setLineColor] = useState("black");
-  const [lineOpacity, setLineOpacity] = useState(0.01);
+  const [lineOpacity, setLineOpacity] = useState(0.5);
   const [clear, setClear] = useState(false);
+
   // Initialization when the component
   // mounts for the first time
   useEffect(() => {
@@ -45,7 +47,6 @@ function App() {
       return;
     }
     contextRef.current.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
-
     contextRef.current.stroke();
   };
 

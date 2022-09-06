@@ -1,0 +1,27 @@
+.menu {
+  width: 65%;
+  height: 50px;
+  display: flex;
+  justify-content: space-evenly;
+  border-radius: 5px;
+  align-items: center;
+  background-color: #a3a3a32d;
+  margin: auto;
+}
+
+.menu button {
+  width: 90px;
+  height: 30px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  background-color: #0075ff;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.menu button:hover {
+  background: #3792f3;
+}
