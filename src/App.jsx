@@ -5,7 +5,7 @@ import Menu from "./components/Menu/Menu";
 function App() {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
-
+  const [line, setLine] = useState("round")
   const [isDrawing, setIsDrawing] = useState(false);
   const [lineWidth, setLineWidth] = useState(15);
   const [lineColor, setLineColor] = useState("black");
@@ -21,13 +21,13 @@ function App() {
       context.clearRect(0, 0, canvas.width, canvas.height);
       setClear(false);
     }
-    context.lineCap = "round";
-    context.lineJoin = "round";
+    context.lineCap = line;
+    context.lineJoin = line;
     context.globalAlpha = lineOpacity;
     context.strokeStyle = lineColor;
     context.lineWidth = lineWidth;
     contextRef.current = context;
-  }, [lineColor, lineOpacity, lineWidth, clear]);
+  }, [line, lineColor, lineOpacity, lineWidth, clear]);
 
   // Function for starting the drawing
   const startDrawing = (e) => {
@@ -55,6 +55,7 @@ function App() {
       <h1>Paint App</h1>
       <div className='draw-area'>
         <Menu
+          setLine={setLine}
           setLineColor={setLineColor}
           setLineWidth={setLineWidth}
           setLineOpacity={setLineOpacity}
