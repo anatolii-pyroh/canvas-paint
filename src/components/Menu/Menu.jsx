@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 import {
-  Checkbox,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -27,8 +26,8 @@ const Menu = ({ setLine, setLineColor, setLineWidth, setLineOpacity, setClear })
       setOpacity(100)
     } else {
       setLine("square")
-      setWidth(20)
-      setOpacity(10)
+      setWidth(25)
+      setOpacity(50)
     }
   }, [radioValue]);
 
