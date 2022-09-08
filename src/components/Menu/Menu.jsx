@@ -10,7 +10,15 @@ import {
 
 import classes from "./Menu.module.css";
 
-const Menu = ({ setLine, setLineColor, setLineWidth, setLineOpacity, setClear }) => {
+const Menu = ({
+  selection,
+  setSelection,
+  setLine,
+  setLineColor,
+  setLineWidth,
+  setLineOpacity,
+  setClear,
+}) => {
   const [radioValue, setRadioValue] = useState("round");
   const [width, setWidth] = useState(10);
   const [opacity, setOpacity] = useState(100);
@@ -21,13 +29,13 @@ const Menu = ({ setLine, setLineColor, setLineWidth, setLineOpacity, setClear })
 
   useEffect(() => {
     if (radioValue === "round") {
-      setLine("round")
-      setWidth(10)
-      setOpacity(100)
+      setLine("round");
+      setWidth(10);
+      setOpacity(100);
     } else {
-      setLine("square")
-      setWidth(25)
-      setOpacity(50)
+      setLine("square");
+      setWidth(25);
+      setOpacity(50);
     }
   }, [radioValue]);
 
@@ -55,6 +63,9 @@ const Menu = ({ setLine, setLineColor, setLineWidth, setLineOpacity, setClear })
 
   return (
     <div className={classes.menu}>
+      <button type='button' onClick={() => setSelection(!selection)}>
+        Selection
+      </button>
       <FormControl sx={{ flexDirection: "row" }}>
         <FormLabel
           id='demo-controlled-radio-buttons-group'
