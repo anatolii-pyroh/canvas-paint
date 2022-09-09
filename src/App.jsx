@@ -8,6 +8,7 @@ function App() {
 
   const [selection, setSelection] = useState(false);
   const [isSelection, setIsSelection] = useState(false);
+  const [paste, setPaste] = useState(false);
   const [area, setArea] = useState({
     startX: "",
     startY: "",
@@ -26,7 +27,31 @@ function App() {
   const [lineColor, setLineColor] = useState("black");
   const [lineOpacity, setLineOpacity] = useState(0.5);
 
-  // Function for starting the drawing
+  const handleKeyDown = (event) => {
+    event.preventDefault();
+    let charCode = String.fromCharCode(event.which).toLowerCase();
+
+    if ((event.ctrlKey || event.metaKey) && charCode === "c") {
+      if (area.startX && area.startY && area.endX && area.endY) {
+        console.log(area);
+        setImageData(
+          contextRef.current.getImageData(
+            area.startX,
+            area.startY,
+            area.endX - area.startX,
+            area.endY - area.startY
+          )
+        );
+      }
+    }
+
+    if ((event.ctrlKey || event.metaKey) && charCode === "v") {
+      setPaste(true);
+    }
+    if ((event.ctrlKey || event.metaKey) && charCode === "x")
+      alert("CTRL+X Pressed");
+  };
+
   const startDrawing = (e) => {
     if (!isDrawing) {
       contextRef.current.beginPath();
@@ -70,13 +95,26 @@ function App() {
           );
           contextRef.current.stroke();
           contextRef.current.setLineDash([]);
+          contextRef.current.globalAlpha = lineOpacity;
           contextRef.current.strokeStyle = lineColor;
+          contextRef.current.lineWidth = lineWidth;
         };
       }
     }
+    if (paste) {
+      const img = new Image();
+      img.src = saved;
+      // console.log("img in paste data", img);
+      contextRef.current.clearRect(0, 0, 1280, 660);
+      contextRef.current.drawImage(img, 0, 0, 1280, 660);
+      contextRef.current.putImageData(
+        imageData,
+        e.nativeEvent.offsetX,
+        e.nativeEvent.offsetY
+      );
+    }
   };
 
-  // Function for ending the drawing
   const endDrawing = (e) => {
     if (isDrawing) {
       contextRef.current.closePath();
@@ -94,6 +132,10 @@ function App() {
         contextRef.current.putImageData(savedContext, 0, 0);
       }
     }
+    if (paste) {
+      setPaste(false);
+    }
+    setSaved(canvasRef.current.toDataURL());
   };
 
   // Initialization when the component
@@ -113,30 +155,30 @@ function App() {
     contextRef.current = context;
   }, [line, lineColor, lineOpacity, lineWidth, clear]);
 
-  useEffect(() => {
-    if (area.startX && area.startY && area.endX && area.endY) {
-      console.log(area);
-      setImageData(
-        contextRef.current.getImageData(
-          area.startX,
-          area.startY,
-          area.endX - area.startX,
-          area.endY - area.startY
-        )
-      );
-    }
-  }, [area]);
+  // useEffect(() => {
+  //   if (area.startX && area.startY && area.endX && area.endY) {
+  //     console.log(area);
+  //     setImageData(
+  //       contextRef.current.getImageData(
+  //         area.startX,
+  //         area.startY,
+  //         area.endX - area.startX,
+  //         area.endY - area.startY
+  //       )
+  //     );
+  //   }
+  // }, [area]);
 
-  useEffect(() => {
-    if (imageData) {
-      console.log(imageData);
-      contextRef.current.putImageData(imageData, 0, 0);
-      setImageData(false);
-      setArea(false);
-    } else {
-      return;
-    }
-  }, [imageData]);
+  // useEffect(() => {
+  //   if (imageData) {
+  //     console.log(imageData);
+  //     contextRef.current.putImageData(imageData, 0, 0);
+  //     setImageData(false);
+  //     setArea(false);
+  //   } else {
+  //     return;
+  //   }
+  // }, [imageData]);
 
   return (
     <div className='App'>
@@ -155,6 +197,8 @@ function App() {
           onMouseDown={startDrawing}
           onMouseUp={endDrawing}
           onMouseMove={draw}
+          tabIndex='1'
+          onKeyDown={(event) => handleKeyDown(event)}
           ref={canvasRef}
           width={`1280px`}
           height={`660px`}

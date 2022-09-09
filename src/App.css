@@ -29,3 +29,7 @@ h1 {
   position: relative;
   background-color: white;
 }
+
+canvas:focus{
+ outline: none;
+}
