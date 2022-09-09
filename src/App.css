@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
 
 body {
-  background: rgb(216, 213, 213);
+  background: #d8d5d5;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
 }
@@ -16,9 +16,9 @@ body {
 }
 
 h1 {
-  font-family: "Lobster", cursive;
+  font-family: "Lobster";
   font-size: 50px;
-  color: #0075FF;
+  color: #0075ff;
   margin: 1rem;
 }
 
@@ -28,9 +28,4 @@ h1 {
   border: 2px solid #808080;
   position: relative;
   background-color: white;
-}
-
-canvas {
-    transition: opacity 1s;
-    will-change: opacity;
 }

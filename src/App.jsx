@@ -1,4 +1,3 @@
-import { AssignmentReturnOutlined } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import Menu from "./components/Menu/Menu";
@@ -6,59 +5,95 @@ import Menu from "./components/Menu/Menu";
 function App() {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
+
   const [selection, setSelection] = useState(false);
+  const [isSelection, setIsSelection] = useState(false);
   const [area, setArea] = useState({
     startX: "",
     startY: "",
     endX: "",
     endY: "",
   });
-  const [imageData, setImageData] = useState("");
+
+  const [imageData, setImageData] = useState();
+  const [clear, setClear] = useState(false);
+  const [savedContext, setSavedContext] = useState();
+  const [saved, setSaved] = useState();
+
   const [line, setLine] = useState("round");
   const [isDrawing, setIsDrawing] = useState(false);
   const [lineWidth, setLineWidth] = useState(15);
   const [lineColor, setLineColor] = useState("black");
   const [lineOpacity, setLineOpacity] = useState(0.5);
-  const [clear, setClear] = useState(false);
 
   // Function for starting the drawing
   const startDrawing = (e) => {
+    if (!isDrawing) {
+      contextRef.current.beginPath();
+      contextRef.current.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+      setIsDrawing(true);
+    }
     if (selection) {
-      // console.log(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+      setIsSelection(true);
+      setIsDrawing(false);
+      setSavedContext(contextRef.current.getImageData(0, 0, 1280, 660));
+      setSaved(canvasRef.current.toDataURL());
       setArea({
         ...area,
         startX: e.nativeEvent.offsetX,
         startY: e.nativeEvent.offsetY,
       });
-    } else {
-      contextRef.current.beginPath();
-      contextRef.current.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
-      setIsDrawing(true);
+    }
+  };
+
+  const draw = (e) => {
+    if (isDrawing) {
+      contextRef.current.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+      contextRef.current.stroke();
+    }
+    if (selection) {
+      if (isSelection) {
+        const img = new Image();
+        img.src = saved;
+        img.onload = () => {
+          contextRef.current.clearRect(0, 0, 1280, 660);
+          contextRef.current.drawImage(img, 0, 0, 1280, 660);
+          contextRef.current.beginPath();
+          contextRef.current.strokeStyle = "black";
+          contextRef.current.setLineDash([10, 20]);
+          contextRef.current.lineWidth = 1;
+          contextRef.current.rect(
+            area.startX,
+            area.startY,
+            e.nativeEvent.offsetX - area.startX,
+            e.nativeEvent.offsetY - area.startY
+          );
+          contextRef.current.stroke();
+          contextRef.current.setLineDash([]);
+          contextRef.current.strokeStyle = lineColor;
+        };
+      }
     }
   };
 
   // Function for ending the drawing
   const endDrawing = (e) => {
-    if (selection) {
-      // console.log(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
-      setArea({
-        ...area,
-        endX: e.nativeEvent.offsetX,
-        endY: e.nativeEvent.offsetY,
-      });
-      setSelection(false);
-    } else {
+    if (isDrawing) {
       contextRef.current.closePath();
       setIsDrawing(false);
     }
-  };
-
-  const draw = (e) => {
-    if (!isDrawing) {
-      return;
+    if (selection) {
+      if (isSelection) {
+        setArea({
+          ...area,
+          endX: e.nativeEvent.offsetX,
+          endY: e.nativeEvent.offsetY,
+        });
+        setSelection(false);
+        setIsSelection(false);
+        contextRef.current.putImageData(savedContext, 0, 0);
+      }
     }
-    contextRef.current.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
-    contextRef.current.stroke();
   };
 
   // Initialization when the component

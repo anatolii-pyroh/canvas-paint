@@ -42,7 +42,6 @@ const Menu = ({
   useEffect(() => {
     const timer = setTimeout(() => {
       setLineWidth(width);
-      console.log(width);
     }, 200);
 
     return () => {
@@ -53,7 +52,6 @@ const Menu = ({
   useEffect(() => {
     const timer = setTimeout(() => {
       setLineOpacity(opacity / 100);
-      console.log(opacity / 100);
     }, 200);
 
     return () => {
@@ -63,7 +61,13 @@ const Menu = ({
 
   return (
     <div className={classes.menu}>
-      <button type='button' onClick={() => setSelection(!selection)}>
+      <button
+        type='button'
+        onClick={() => setSelection(!selection)}
+        style={{
+          background: selection ? "#6b90b9" : "#0075ff",
+        }}
+      >
         Selection
       </button>
       <FormControl sx={{ flexDirection: "row" }}>
