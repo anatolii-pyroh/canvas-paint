@@ -109,8 +109,8 @@ function App() {
       contextRef.current.drawImage(img, 0, 0, 1280, 660);
       contextRef.current.putImageData(
         imageData,
-        e.nativeEvent.offsetX,
-        e.nativeEvent.offsetY
+        e.nativeEvent.offsetX + (area.startX - area.endX) / 2,
+        e.nativeEvent.offsetY + (area.startY - area.endY) / 2
       );
     }
   };
@@ -154,31 +154,6 @@ function App() {
     context.lineWidth = lineWidth;
     contextRef.current = context;
   }, [line, lineColor, lineOpacity, lineWidth, clear]);
-
-  // useEffect(() => {
-  //   if (area.startX && area.startY && area.endX && area.endY) {
-  //     console.log(area);
-  //     setImageData(
-  //       contextRef.current.getImageData(
-  //         area.startX,
-  //         area.startY,
-  //         area.endX - area.startX,
-  //         area.endY - area.startY
-  //       )
-  //     );
-  //   }
-  // }, [area]);
-
-  // useEffect(() => {
-  //   if (imageData) {
-  //     console.log(imageData);
-  //     contextRef.current.putImageData(imageData, 0, 0);
-  //     setImageData(false);
-  //     setArea(false);
-  //   } else {
-  //     return;
-  //   }
-  // }, [imageData]);
 
   return (
     <div className='App'>
