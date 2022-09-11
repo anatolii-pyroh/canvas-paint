@@ -15,10 +15,10 @@ function App() {
   const [clear, setClear] = useState(false);
   // selection area
   const [area, setArea] = useState({
-    startX: "",
-    startY: "",
-    endX: "",
-    endY: "",
+    startX: undefined,
+    startY: undefined,
+    endX: undefined,
+    endY: undefined,
   });
 
   const [imageData, setImageData] = useState();
@@ -65,7 +65,7 @@ function App() {
   };
 
   const copy = () => {
-    if (area.startX && area.startY && area.endX && area.endY) {
+    if (area.endX) {
       setImageData(
         contextRef.current.getImageData(
           area.startX,
