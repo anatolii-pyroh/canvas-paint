@@ -9,6 +9,9 @@ function App() {
   const [selection, setSelection] = useState(false);
   const [isSelection, setIsSelection] = useState(false);
   const [paste, setPaste] = useState(false);
+  const [crop, setCrop] = useState(false);
+  const [clear, setClear] = useState(false);
+  // selected area
   const [area, setArea] = useState({
     startX: "",
     startY: "",
@@ -17,39 +20,54 @@ function App() {
   });
 
   const [imageData, setImageData] = useState();
-  const [clear, setClear] = useState(false);
   const [savedContext, setSavedContext] = useState();
-  const [saved, setSaved] = useState();
+  const [saved, setSaved] = useState(null);
 
   const [line, setLine] = useState("round");
   const [isDrawing, setIsDrawing] = useState(false);
   const [lineWidth, setLineWidth] = useState(15);
   const [lineColor, setLineColor] = useState("black");
-  const [lineOpacity, setLineOpacity] = useState(0.5);
+  const [lineOpacity, setLineOpacity] = useState(1);
 
   const handleKeyDown = (event) => {
     event.preventDefault();
     let charCode = String.fromCharCode(event.which).toLowerCase();
 
     if ((event.ctrlKey || event.metaKey) && charCode === "c") {
-      if (area.startX && area.startY && area.endX && area.endY) {
-        console.log(area);
-        setImageData(
-          contextRef.current.getImageData(
-            area.startX,
-            area.startY,
-            area.endX - area.startX,
-            area.endY - area.startY
-          )
-        );
-      }
+      console.log("ctrl+c");
+      copy();
     }
 
     if ((event.ctrlKey || event.metaKey) && charCode === "v") {
+      console.log("ctrl+v");
       setPaste(true);
     }
-    if ((event.ctrlKey || event.metaKey) && charCode === "x")
-      alert("CTRL+X Pressed");
+    if ((event.ctrlKey || event.metaKey) && charCode === "x") {
+      console.log("ctrl+x");
+      copy();
+      if (area.endX) {
+        contextRef.current.clearRect(
+          area.startX,
+          area.startY,
+          area.endX,
+          area.endY
+        );
+      }
+      setSaved(canvasRef.current.toDataURL());
+    }
+  };
+
+  const copy = () => {
+    if (area.startX && area.startY && area.endX && area.endY) {
+      setImageData(
+        contextRef.current.getImageData(
+          area.startX,
+          area.startY,
+          area.endX - area.startX,
+          area.endY - area.startY
+        )
+      );
+    }
   };
 
   const startDrawing = (e) => {
@@ -85,7 +103,7 @@ function App() {
           contextRef.current.drawImage(img, 0, 0, 1280, 660);
           contextRef.current.beginPath();
           contextRef.current.strokeStyle = "black";
-          contextRef.current.setLineDash([10, 20]);
+          contextRef.current.setLineDash([5, 10]);
           contextRef.current.lineWidth = 1;
           contextRef.current.rect(
             area.startX,
@@ -102,16 +120,18 @@ function App() {
       }
     }
     if (paste) {
-      const img = new Image();
-      img.src = saved;
-      // console.log("img in paste data", img);
-      contextRef.current.clearRect(0, 0, 1280, 660);
-      contextRef.current.drawImage(img, 0, 0, 1280, 660);
-      contextRef.current.putImageData(
-        imageData,
-        e.nativeEvent.offsetX + (area.startX - area.endX) / 2,
-        e.nativeEvent.offsetY + (area.startY - area.endY) / 2
-      );
+      if (area.endX) {
+        const img = new Image();
+        img.src = saved;
+        // console.log("img in paste data", img);
+        contextRef.current.clearRect(0, 0, 1280, 660);
+        contextRef.current.drawImage(img, 0, 0, 1280, 660);
+        contextRef.current.putImageData(
+          imageData,
+          e.nativeEvent.offsetX - imageData.width / 2,
+          e.nativeEvent.offsetY - imageData.height / 2
+        );
+      }
     }
   };
 
@@ -134,6 +154,9 @@ function App() {
     }
     if (paste) {
       setPaste(false);
+    }
+    if (crop) {
+      setCrop(false);
     }
     setSaved(canvasRef.current.toDataURL());
   };
