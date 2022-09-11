@@ -9,9 +9,9 @@ function App() {
   const contextRef = useRef(null);
 
   const [selection, setSelection] = useState(false);
+  // draw selection border when this state is true and reject default drawing
   const [isSelection, setIsSelection] = useState(false);
   const [paste, setPaste] = useState(false);
-  const [crop, setCrop] = useState(false);
   const [clear, setClear] = useState(false);
   // selection area
   const [area, setArea] = useState({
@@ -22,6 +22,7 @@ function App() {
   });
 
   const [imageData, setImageData] = useState();
+  // state to save previouse canvas paintings while drawing new one
   const [savedContext, setSavedContext] = useState();
   const [saved, setSaved] = useState(null);
 
@@ -35,15 +36,19 @@ function App() {
     event.preventDefault();
     let charCode = String.fromCharCode(event.which).toLowerCase();
 
+    // ctrl+c
     if ((event.ctrlKey || event.metaKey) && charCode === "c") {
       console.log("ctrl+c");
       copy();
     }
 
+    // ctrl+v
     if ((event.ctrlKey || event.metaKey) && charCode === "v") {
       console.log("ctrl+v");
       setPaste(true);
     }
+
+    // ctrl+x
     if ((event.ctrlKey || event.metaKey) && charCode === "x") {
       console.log("ctrl+x");
       copy();
@@ -91,7 +96,7 @@ function App() {
     }
   };
 
-  const draw = (e) => {
+  const drawing = (e) => {
     if (isDrawing) {
       contextRef.current.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
       contextRef.current.stroke();
@@ -157,9 +162,7 @@ function App() {
     if (paste) {
       setPaste(false);
     }
-    if (crop) {
-      setCrop(false);
-    }
+    // save new canvas paintings every time user ends drawing
     setSaved(canvasRef.current.toDataURL());
   };
 
@@ -196,7 +199,7 @@ function App() {
         <canvas
           onMouseDown={startDrawing}
           onMouseUp={endDrawing}
-          onMouseMove={draw}
+          onMouseMove={drawing}
           tabIndex='1'
           onKeyDown={(event) => handleKeyDown(event)}
           ref={canvasRef}
