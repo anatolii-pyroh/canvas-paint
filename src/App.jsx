@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import "./App.css";
+
 import Menu from "./components/Menu/Menu";
+
+import "./App.css";
 
 function App() {
   const canvasRef = useRef(null);
@@ -11,7 +13,7 @@ function App() {
   const [paste, setPaste] = useState(false);
   const [crop, setCrop] = useState(false);
   const [clear, setClear] = useState(false);
-  // selected area
+  // selection area
   const [area, setArea] = useState({
     startX: "",
     startY: "",
@@ -49,8 +51,8 @@ function App() {
         contextRef.current.clearRect(
           area.startX,
           area.startY,
-          area.endX,
-          area.endY
+          area.endX - area.startX,
+          area.endY - area.startY
         );
       }
       setSaved(canvasRef.current.toDataURL());
